@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>stillmotion · basic example</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: #0b0c10; color: #f2f2f2; display: grid; place-items: center; overflow: hidden; font: 600 3vw system-ui, sans-serif; }
+  .dot { width: 12vw; height: 12vw; border-radius: 50%; background: #ff7a59; animation: bounce 0.5s ease-in-out infinite alternate; }
+  @keyframes bounce { from { transform: translateY(-18vh); } to { transform: translateY(18vh) scale(1.1, 0.9); } }
+  #clock { position: fixed; bottom: 6vh; opacity: 0.7; font-variant-numeric: tabular-nums; }
+  #hint { position: fixed; top: 6vh; font-size: 1.6vw; opacity: 0.5; }
+  .capture #hint { display: none; }
+</style>
+</head>
+<body>
+<p id="hint">click to toggle sound</p>
+<div class="dot"></div>
+<div id="clock">0.00 s</div>
+
+<script src="../../audio.js"></script>
+<script src="../../capture.js"></script>
+<script src="../../voices.js"></script>
+<script>
+  // One timeline drives both the picture and the sound: a pluck every time the dot hits the floor.
+  const DURATION = 4000;
+  const cues = [0.5, 1.5, 2.5, 3.5].map((t, i) => ({ t, kind: 'pluck', f: [523.3, 659.3, 784, 1046.5][i], g: 0.25 }));
+  const clock = document.getElementById('clock');
+  const update = (ms) => { clock.textContent = `${(ms / 1000).toFixed(2)} s`; };
+  const { isCapture, installCapture, audio, voices } = Stillmotion;
+
+  if (isCapture) {
+    // Exporter mode: the recorder calls capture.renderAt(t) for every frame
+    installCapture({
+      duration: DURATION,
+      update,
+      audio: () => audio.renderWavBase64(DURATION / 1000, [{ base: 0, cues }], voices),
+    });
+  } else {
+    // Live mode: real clock, sound after a click (browsers block autoplay)
+    const start = performance.now();
+    const now = () => (performance.now() - start) % DURATION;
+    const loop = () => { update(now()); requestAnimationFrame(loop); };
+    loop();
+    const player = new audio.LivePlayer(voices);
+    addEventListener('click', () => player.toggle(cues, now() / 1000));
+  }
+</script>
+</body>
+</html>

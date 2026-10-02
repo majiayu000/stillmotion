@@ -1,0 +1,50 @@
+{
+  "name": "stillmotion",
+  "version": "0.1.0",
+  "description": "Turn browser animations into frame-exact MP4 videos with synthesized sound: CSS, SVG/SMIL and WebGL, recorded in headless Chrome.",
+  "type": "module",
+  "bin": {
+    "stillmotion": "./record.mjs"
+  },
+  "files": [
+    "audio.js",
+    "capture.js",
+    "voices.js",
+    "record.mjs",
+    "server.mjs"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check audio.js && node --check capture.js && node --check voices.js && node --check record.mjs && node --check server.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/majiayu000/stillmotion.git"
+  },
+  "homepage": "https://github.com/majiayu000/stillmotion#readme",
+  "bugs": {
+    "url": "https://github.com/majiayu000/stillmotion/issues"
+  },
+  "keywords": [
+    "animation",
+    "video",
+    "mp4",
+    "export",
+    "puppeteer",
+    "ffmpeg",
+    "web-audio",
+    "css-animation",
+    "svg",
+    "webgl",
+    "three.js",
+    "frame-capture",
+    "motion-graphics"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer-core": "^25.12.0"
+  }
+}
