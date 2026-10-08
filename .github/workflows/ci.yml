@@ -20,3 +20,18 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm test
+
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install encoder and probe
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Record the basic example and a silent page with installed Chrome
+        run: node scripts/browser-smoke.mjs

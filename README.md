@@ -76,6 +76,8 @@ if (isCapture) {
 
 CSS animations and transitions need nothing extra: each one is paused and seeked to "virtual time minus the moment it first appeared", so animations that start when you toggle a class mid-timeline behave exactly as they do live. While capturing, `<html>` gets a `capture` class you can use to hide interactive controls.
 
+Omit `audio` to export a video without an audio track. If a supplied audio callback fails, recording fails with that error.
+
 ## Sound
 
 A cue is `{ t, kind, dur?, ...params }`: `t` is seconds from the start of a track, `kind` names a voice, and `dur` marks a sustained sound. A voice is a function `(ctx, out, at, cue)` that schedules Web Audio nodes starting at absolute context time `at`, so you can mix the built-ins with your own:
