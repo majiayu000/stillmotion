@@ -74,14 +74,18 @@ try {
   const durationMs = opt.seconds ? Math.min(Number(opt.seconds) * 1000, totalMs) : totalMs;
 
   const wav = path.join(tmp, 'audio.wav');
-  await writeFile(wav, Buffer.from(await page.evaluate(() => capture.audioWav()), 'base64'));
+  const hasAudio = await page.evaluate(() => capture.audioWav !== undefined);
+  if (hasAudio) {
+    await writeFile(wav, Buffer.from(await page.evaluate(() => capture.audioWav()), 'base64'));
+  }
 
   const ff = spawn('ffmpeg', [
     '-y', '-loglevel', 'error',
     '-f', 'image2pipe', '-framerate', String(fps), '-i', '-',
-    '-i', wav,
+    ...(hasAudio ? ['-i', wav] : []),
     '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p',
-    '-c:a', 'aac', '-b:a', '192k', '-t', String(durationMs / 1000), '-movflags', '+faststart', out,
+    ...(hasAudio ? ['-c:a', 'aac', '-b:a', '192k'] : []),
+    '-t', String(durationMs / 1000), '-movflags', '+faststart', out,
   ], { stdio: ['pipe', 'inherit', 'inherit'] });
   const finished = new Promise((resolve, reject) => {
     ff.on('error', (e) => reject(new Error(`Could not start ffmpeg: ${e.message}`)));
