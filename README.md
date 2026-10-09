@@ -18,7 +18,7 @@ Because time is virtual, a frame that takes two seconds to render still lands at
 
 ## Requirements
 
-- Node.js 20+
+- Node.js 22.12.0+
 - Google Chrome (or pass any Chromium build with `--chrome`)
 - `ffmpeg` on your `PATH`
 
